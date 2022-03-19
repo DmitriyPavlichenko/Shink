@@ -2,8 +2,6 @@ package com.shink;
 
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 public class UrlService {
     private static UrlRepository repository;
@@ -12,13 +10,17 @@ public class UrlService {
         UrlService.repository = repository;
     }
 
-    public static String saveUrl(String url) {
+    public String saveUrl(String url) {
         UserUrl userUrl = new UserUrl(url);
         repository.save(userUrl);
         return userUrl.getHashedUrl();
     }
 
-    public static Optional<UserUrl> getUrl(String url) {
-        return repository.findUserUrlByHashedUrl(url);
+    public String getUrl(String url) {
+        if (repository.findUserUrlByHashedUrl(url).isPresent()) {
+            return repository.findUserUrlByHashedUrl(url).get().getUrl();
+        } else {
+            return "error";
+        }
     }
 }
